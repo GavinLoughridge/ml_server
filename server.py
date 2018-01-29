@@ -31,10 +31,10 @@ app = Flask(__name__, template_folder='./static')
 def index():
     return render_template('index.html')
 
-@app.route('/api/<path:data>', methods=['GET'])
-def classify(data):
+@app.route('/api', methods=['POST'])
+def classify():
     size = 28, 28
-    image = Image.open(BytesIO(base64.b64decode(data[5:]))).convert('L')
+    image = Image.open(BytesIO(base64.b64decode(json.loads(request.data)['data']))).convert('L')
     image.thumbnail(size, Image.ANTIALIAS)
     array = np.array(image, dtype=np.float)
 

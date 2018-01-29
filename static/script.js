@@ -1,5 +1,3 @@
-console.log('script running')
-
 Vue.options.delimiters = ['{[{', '}]}'];
 
 let picFrame = new Vue({
@@ -19,9 +17,10 @@ function upload(input) {
 
             data = (e.target.result).split(',')[1]
 
-            axios.get('/api/data:' + data)
+            axios.post('/api', {
+              data: data
+            })
             .then(function (response) {
-              console.log('response was:', response);
               picFrame.message = "That is a picture of the digit " + response.data.guess
             })
         };
