@@ -39,11 +39,7 @@ def classify():
 
     (width, height) = image.size
 
-    print("width:", width)
-    print("height:", height)
-
     if width > height:
-        print('cropping width')
         left = math.floor(0 + (width - height) / 2)
         right = math.floor(width - (width - height) / 2)
         upper = 0
@@ -52,7 +48,6 @@ def classify():
         image = image.crop(box)
 
     if width < height:
-        print('cropping height')
         left = 0
         right = width
         upper = math.floor(0 + (height - width) / 2)
@@ -60,11 +55,7 @@ def classify():
         box = (left, upper, right, lower)
         image = image.crop(box)
 
-    image.save('cropped.jpg', "JPEG")
-
     image.thumbnail(size, Image.ANTIALIAS)
-
-    image.save('resized.jpg', "JPEG")
     array = np.array(image, dtype=np.float)
 
     average = np.mean(array)
@@ -77,5 +68,7 @@ def classify():
     myGuess = guess.eval(feed_dict={x: formatted_array.reshape(1, 784)})[0]
 
     return Response(json.dumps({
-        'guess': myGuess
+        'guess': myGuess,
+        'width': width,
+        'height': height
     }), mimetype='application/json')
