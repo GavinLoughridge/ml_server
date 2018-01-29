@@ -22,6 +22,8 @@ function upload(input) {
             })
             .then(function (response) {
               picFrame.message = "That is a picture of the digit " + response.data.guess + " width: " + response.data.width + " height: " + response.data.height
+
+              console.log(response);
             })
         };
 
