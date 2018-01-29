@@ -9,6 +9,7 @@ from PIL import Image
 from io import BytesIO
 import base64
 import json
+import math
 
 x = tf.placeholder(tf.float32, [None, 784])
 W = tf.Variable(tf.zeros([784, 10]))
@@ -35,7 +36,35 @@ def index():
 def classify():
     size = 28, 28
     image = Image.open(BytesIO(base64.b64decode(json.loads(request.data)['data']))).convert('L')
+
+    (width, height) = image.size
+
+    print("width:", width)
+    print("height:", height)
+
+    if width > height:
+        print('cropping width')
+        left = math.floor(0 + (width - height) / 2)
+        right = math.floor(width - (width - height) / 2)
+        upper = 0
+        lower = height
+        box = (left, upper, right, lower)
+        image = image.crop(box)
+
+    if width < height:
+        print('cropping height')
+        left = 0
+        right = width
+        upper = math.floor(0 + (height - width) / 2)
+        lower = math.floor(height - (height - width) / 2)
+        box = (left, upper, right, lower)
+        image = image.crop(box)
+
+    image.save('cropped.jpg', "JPEG")
+
     image.thumbnail(size, Image.ANTIALIAS)
+
+    image.save('resized.jpg', "JPEG")
     array = np.array(image, dtype=np.float)
 
     average = np.mean(array)
