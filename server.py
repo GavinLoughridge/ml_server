@@ -45,7 +45,7 @@ def classify():
         upper = 0
         lower = height
         box = (left, upper, right, lower)
-        image = image.crop(box)
+        image = image.crop(box).rotate(270)
 
     if width < height:
         left = 0
