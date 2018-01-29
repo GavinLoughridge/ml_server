@@ -67,8 +67,11 @@ def classify():
     guess = tf.argmax(y,1)
     myGuess = guess.eval(feed_dict={x: formatted_array.reshape(1, 784)})[0]
 
+    buffered = BytesIO()
+    image.save(buffered, format="JPEG")
+    content = base64.b64encode(buffered.getvalue())
+
     return Response(json.dumps({
         'guess': myGuess,
-        'width': width,
-        'height': height
+        'image': content
     }), mimetype='application/json')

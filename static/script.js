@@ -13,17 +13,19 @@ function upload(input) {
         var reader = new FileReader();
 
         reader.onload = function (e) {
-            picFrame.image = e.target.result
+            // picFrame.image = e.target.result
 
-            data = (e.target.result).split(',')[1]
+            file = (e.target.result).split(',')
+            type = file[0]
+            content = file[1]
 
             axios.post('/api', {
-              data: data
+              data: content
             })
             .then(function (response) {
-              picFrame.message = "That is a picture of the digit " + response.data.guess + " width: " + response.data.width + " height: " + response.data.height
+              picFrame.message = "That is a picture of the digit " + response.data.guess
 
-              console.log(response);
+              picFrame.image = type + ',' + response.data.image
             })
         };
 
