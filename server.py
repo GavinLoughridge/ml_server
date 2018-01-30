@@ -59,8 +59,12 @@ def classify():
     array = np.array(image, dtype=np.float)
 
     average = np.mean(array)
+    amax = np.amax(array)
+    amin = np.amin(array)
     def format(pixle):
-        return ((pixle * -1) + 255) / 255 if pixle < (5 * average / 6) else 0
+        return ((pixle * -1) + 255) / 255 if pixle < (amin + 2 * (amax - amin) / 3) else 0
+
+        # return ((pixle * -1) + 255) / 255 if pixle < (5 * average / 6) else 0
     format = np.vectorize(format, otypes=[np.float])
     formated = format(array)
 
