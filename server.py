@@ -62,7 +62,14 @@ def classify():
     def format(pixle):
         return ((pixle * -1) + 255) / 255 if pixle < (5 * average / 6) else 0
     format = np.vectorize(format, otypes=[np.float])
-    formatted_array = format(array)
+    formated = format(array)
+
+    up = np.insert(np.delete(formated, 0, axis=0), 27, 0, axis=0)
+    down = np.insert(np.delete(formated, 27, axis=0), 0, 0, axis=0)
+    left = np.insert(np.delete(formated, 0, axis=1), 27, 0, axis=1)
+    right = np.insert(np.delete(formated, 27, axis=1), 0, 0, axis=1)
+
+    formatted_array = np.maximum.reduce([formated, up, down, left, right])
 
     guess = tf.argmax(y,1)
     myGuess = guess.eval(feed_dict={x: formatted_array.reshape(1, 784)})[0]
