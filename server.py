@@ -39,9 +39,6 @@ def index():
 def classify():
     image_data = json.loads(request.data)['data']
     image = Image.open(BytesIO(base64.b64decode(image_data)))
-    (width, height) = image.size
-    if width > height:
-        image = image.rotate(270)
 
     enhancer = ImageEnhance.Brightness(image)
     image = enhancer.enhance(2.0)
@@ -56,6 +53,10 @@ def classify():
 
     enhancer = ImageEnhance.Contrast(image)
     image = enhancer.enhance(4.0)
+
+    (width, height) = image.size
+    if width > height:
+        image = image.rotate(270)
 
     image.thumbnail((28, 28), Image.ANTIALIAS)
     image = image.convert('L')
