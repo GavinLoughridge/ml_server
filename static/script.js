@@ -3,8 +3,9 @@ Vue.options.delimiters = ['{[{', '}]}'];
 let picFrame = new Vue({
   el: '#pic-frame',
   data: {
-    image: '/static/assets/upload.jpg',
-    message: 'upload a picture to see a guess'
+    original: '/static/assets/upload.jpg',
+    processed: '/static/assets/upload.jpg',
+    guess: 'upload a picture to see a guess'
   }
 })
 
@@ -13,7 +14,7 @@ function upload(input) {
         var reader = new FileReader();
 
         reader.onload = function (e) {
-            // picFrame.image = e.target.result
+            picFrame.original = e.target.result
 
             file = (e.target.result).split(',')
             type = file[0]
@@ -23,9 +24,9 @@ function upload(input) {
               data: content
             })
             .then(function (response) {
-              picFrame.message = "That is a picture of the digit " + response.data.guess
+              picFrame.guess = response.data.guess
 
-              picFrame.image = type + ',' + response.data.image
+              picFrame.processed = type + ',' + response.data.image
             })
         };
 

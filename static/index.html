@@ -11,14 +11,15 @@
   <body>
 
     <div id="pic-frame">
-      <img v-bind:src="image">
+      <img v-bind:src="original">
+      <img v-bind:src="processed">
 
       <br>
 
       <input id="picture" type="file" accept="image/*" capture="camera"
       onchange="upload(this)"/>
 
-      <p>{[{ message }]}</p>
+      <p>{[{ guess }]}</p>
     <div>
 
     <script
