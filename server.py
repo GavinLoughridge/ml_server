@@ -40,8 +40,17 @@ def classify():
     image_data = json.loads(request.data)['data']
     image = Image.open(BytesIO(base64.b64decode(image_data)))
 
+    # directory = os.path.dirname(os.path.abspath(__file__))
+    # outfile = os.path.join(directory, '0-origin.jpg')
+    # image.save(outfile, "JPEG")
+
     enhancer = ImageEnhance.Brightness(image)
     image = enhancer.enhance(2.0)
+
+    # directory = os.path.dirname(os.path.abspath(__file__))
+    # outfile = os.path.join(directory, '1-bright.jpg')
+    # image.save(outfile, "JPEG")
+
 
     r, g, b = image.split()
     r = r.point(lambda p: p > 220 and 255)
@@ -49,21 +58,49 @@ def classify():
     b = b.point(lambda p: p > 200 and 255)
     image = Image.merge("RGB", (r, g, b))
 
+    # directory = os.path.dirname(os.path.abspath(__file__))
+    # outfile = os.path.join(directory, '2-clipped.jpg')
+    # image.save(outfile, "JPEG")
+
+
     image = image.filter(ImageFilter.GaussianBlur(5))
+
+    # directory = os.path.dirname(os.path.abspath(__file__))
+    # outfile = os.path.join(directory, '3-blur.jpg')
+    # image.save(outfile, "JPEG")
+
 
     enhancer = ImageEnhance.Contrast(image)
     image = enhancer.enhance(4.0)
+
+    # directory = os.path.dirname(os.path.abspath(__file__))
+    # outfile = os.path.join(directory, '4-contrast.jpg')
+    # image.save(outfile, "JPEG")
+
 
     (width, height) = image.size
     if width > height:
-        image = image.rotate(270)
+        image = image.rotate(270, expand=True)
+
+        # directory = os.path.dirname(os.path.abspath(__file__))
+        # outfile = os.path.join(directory, '4-rotated.jpg')
+        # image.save(outfile, "JPEG")
 
     image.thumbnail((28, 28), Image.ANTIALIAS)
     image = image.convert('L')
-    array = np.array(image, dtype=np.float)
+
+    # directory = os.path.dirname(os.path.abspath(__file__))
+    # outfile = os.path.join(directory, '5-thumb.jpg')
+    # image.save(outfile, "JPEG")
 
     enhancer = ImageEnhance.Contrast(image)
     image = enhancer.enhance(4.0)
+
+    # directory = os.path.dirname(os.path.abspath(__file__))
+    # outfile = os.path.join(directory, '6-contrast2.jpg')
+    # image.save(outfile, "JPEG")
+
+    array = np.array(image, dtype=np.float)
 
     average = np.mean(array)
     amax = np.amax(array)
@@ -72,6 +109,11 @@ def classify():
         return 1 if pixle < threshold else 0
     format_max = np.vectorize(format_max, otypes=[np.float])
     formatted_array = format_max(array, average)
+
+    # image = Image.fromarray(np.uint8(formatted_array * 255), 'L')
+    # directory = os.path.dirname(os.path.abspath(__file__))
+    # outfile = os.path.join(directory, '7-vect_max.jpg')
+    # image.save(outfile, "JPEG")
 
     (rows, cols) = array.shape
     shadows = []
@@ -103,6 +145,11 @@ def classify():
         if loopGuard > 800:
             print('in a loop')
             break
+
+    # image = Image.fromarray(np.uint8(formatted_array * 255), 'L')
+    # directory = os.path.dirname(os.path.abspath(__file__))
+    # outfile = os.path.join(directory, '8-shadowless.jpg')
+    # image.save(outfile, "JPEG")
 
     (nonzero_row,nonzero_col) = np.nonzero(formatted_array)
     min_row = np.amin(nonzero_row)
@@ -152,6 +199,11 @@ def classify():
         col = int(inner_col[i])
         value = inner_array.item((row,col))
         centered_array.itemset((row+shift_row,col+shift_col), value)
+
+    # image = Image.fromarray(np.uint8(centered_array * 255), 'L')
+    # directory = os.path.dirname(os.path.abspath(__file__))
+    # outfile = os.path.join(directory, '9-centered.jpg')
+    # image.save(outfile, "JPEG")
 
     guess = tf.argmax(y,1)
     myGuess = guess.eval(feed_dict={x: centered_array.reshape(1, 784)})[0]
