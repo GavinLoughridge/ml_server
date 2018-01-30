@@ -41,7 +41,7 @@ def classify():
     image = Image.open(BytesIO(base64.b64decode(image_data)))
     (width, height) = image.size
     if width > height:
-        mage = image.rotate(270)
+        image = image.rotate(270)
 
     enhancer = ImageEnhance.Brightness(image)
     image = enhancer.enhance(2.0)
