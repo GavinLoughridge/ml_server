@@ -153,7 +153,7 @@ def classify():
         ratio = float(20)/width
     else:
         ratio = float(20)/height
-    image_inner = image_inner.resize((int(width*ratio), int(height*ratio), Image.LANCZOS)
+    image_inner = image_inner.resize((int(width*ratio), int(height*ratio), Image.LANCZOS))
     image_inner = image_inner.convert('L')
     inner_array = np.array(image_inner, dtype=np.float)
 
