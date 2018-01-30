@@ -60,15 +60,16 @@ def classify():
 
     average = np.mean(array)
     def format(pixle):
-        return ((pixle * -1) + 255) / 255 if pixle < (average / 2) else 0
+        return ((pixle * -1) + 255) / 255 if pixle < (5 * average / 6) else 0
     format = np.vectorize(format, otypes=[np.float])
     formatted_array = format(array)
 
     guess = tf.argmax(y,1)
     myGuess = guess.eval(feed_dict={x: formatted_array.reshape(1, 784)})[0]
 
+    img = Image.fromarray(np.uint8(formatted_array * 255), 'L')
     buffered = BytesIO()
-    image.save(buffered, format="JPEG")
+    img.save(buffered, format="JPEG")
     content = base64.b64encode(buffered.getvalue())
 
     return Response(json.dumps({
