@@ -39,17 +39,12 @@ def index():
 def classify():
     image_data = json.loads(request.data)['data']
     image = Image.open(BytesIO(base64.b64decode(image_data)))
-
-    directory = os.path.dirname(os.path.abspath(__file__))
-    outfile = os.path.join(directory, '0-original.jpg')
-    image.save(outfile, "JPEG")
+    (width, height) = image.size
+    if width > height:
+        mage = image.rotate(270)
 
     enhancer = ImageEnhance.Brightness(image)
     image = enhancer.enhance(2.0)
-
-    directory = os.path.dirname(os.path.abspath(__file__))
-    outfile = os.path.join(directory, '1-bright.jpg')
-    image.save(outfile, "JPEG")
 
     r, g, b = image.split()
     r = r.point(lambda p: p > 220 and 255)
@@ -57,41 +52,17 @@ def classify():
     b = b.point(lambda p: p > 200 and 255)
     image = Image.merge("RGB", (r, g, b))
 
-    directory = os.path.dirname(os.path.abspath(__file__))
-    outfile = os.path.join(directory, '2-clipped.jpg')
-    image.save(outfile, "JPEG")
-
     image = image.filter(ImageFilter.GaussianBlur(5))
-
-    directory = os.path.dirname(os.path.abspath(__file__))
-    outfile = os.path.join(directory, '3-blur.jpg')
-    image.save(outfile, "JPEG")
 
     enhancer = ImageEnhance.Contrast(image)
     image = enhancer.enhance(4.0)
-
-    directory = os.path.dirname(os.path.abspath(__file__))
-    outfile = os.path.join(directory, '4-contrast.jpg')
-    image.save(outfile, "JPEG")
-
-    (width, height) = image.size
-    if width > height:
-        mage = image.rotate(270)
 
     image.thumbnail((28, 28), Image.ANTIALIAS)
     image = image.convert('L')
     array = np.array(image, dtype=np.float)
 
-    directory = os.path.dirname(os.path.abspath(__file__))
-    outfile = os.path.join(directory, '5-final.jpg')
-    image.save(outfile, "JPEG")
-
     enhancer = ImageEnhance.Contrast(image)
     image = enhancer.enhance(4.0)
-
-    directory = os.path.dirname(os.path.abspath(__file__))
-    outfile = os.path.join(directory, '6-contrast.jpg')
-    image.save(outfile, "JPEG")
 
     average = np.mean(array)
     amax = np.amax(array)
