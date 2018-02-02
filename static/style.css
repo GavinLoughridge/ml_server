@@ -1,5 +1,30 @@
-@media all and (max-width: 768px) {
-    img {
-        width: 90%;
-    }
+.app {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
+
+.container {
+  width: 30vw;
+  max-height: 30vw;
+  overflow: hidden;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 30vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid red;
+}
+
+img {
+  width: 100%;
+}
+
+/* @media all and (max-width: 768px) {
+  .container {
+    width: 90vw;
+    max-height: 90vw;
+    font-size: 90vw;
+  }
+} */

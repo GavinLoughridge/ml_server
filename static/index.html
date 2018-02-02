@@ -10,16 +10,21 @@
   </head>
   <body>
 
-    <div id="pic-frame">
-      <img v-bind:src="original">
-      <img v-bind:src="processed">
+    <div id="digitReader" class="app">
+      <div class="container">
+        <image v-bind:src="original" onclick="capture()">
+      </div>
 
-      <br>
+      <div class="container">
+        <img v-bind:src="processed">
+      </div>
 
-      <input id="picture" type="file" accept="image/*" capture="camera"
-      onchange="upload(this)"/>
+      <input id="pictureInput" type="file" accept="image/*" capture="camera"
+      onchange="upload(this)" style="display:none;"/>
 
-      <p>{[{ guess }]}</p>
+      <div class="container">
+        {[{ guess }]}
+      </div>
     <div>
 
     <script
@@ -28,6 +33,7 @@
     crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/static/assets/load-image.all.min.js"></script>
     <script src="/static/script.js"></script>
   </body>
 </html>
